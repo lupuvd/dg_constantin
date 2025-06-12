@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <title>dg_constantin - Vânzare Mașini</title>
+</head>
+<body>
+  <h1>Bine ai venit pe platforma dg_constantin!</h1>
+  <p>Postează o mașină spre vânzare:</p>
+
+  <form id="carForm">
+    <input type="text" id="marca" placeholder="Marca" required><br>
+    <input type="text" id="model" placeholder="Model" required><br>
+    <input type="number" id="an" placeholder="Anul" required><br>
+    <input type="number" id="pret" placeholder="Preț (€)" required><br>
+    <input type="text" id="contact" placeholder="Telefon / Email" required><br>
+    <button type="submit">Trimite</button>
+  </form>
+
+  <p id="status"></p>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBRZkEpGG1uE-6b1h8wChMZnOnM4KECWtg",
+      authDomain: "dgconstantin-d45b7.firebaseapp.com",
+      projectId: "dgconstantin-d45b7",
+      storageBucket: "dgconstantin-d45b7.firebasestorage.app",
+      messagingSenderId: "502069645211",
+      appId: "1:502069645211:web:3b664ef60bbdbc3db55b3e",
+      measurementId: "G-T1RQKYHY7X"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const form = document.getElementById('carForm');
+    const status = document.getElementById('status');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const marca = document.getElementById('marca').value;
+      const model = document.getElementById('model').value;
+      const an = document.getElementById('an').value;
+      const pret = document.getElementById('pret').value;
+      const contact = document.getElementById('contact').value;
+
+      try {
+        await addDoc(collection(db, "masini"), {
+          marca,
+          model,
+          an,
+          pret,
+          contact,
+          data: new Date()
+        });
+        status.innerText = "Mașina a fost trimisă cu succes!";
+        form.reset();
+      } catch (error) {
+        status.innerText = "Eroare la trimitere.";
+        console.error("Eroare:", error);
+      }
+    });
+  </script>
+</body>
+</html>
